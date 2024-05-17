@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -15,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -62,7 +62,8 @@ fun NavIcon(model: BottomNavItemModel, onClick: () -> Unit, isPicked: Boolean) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .size(if (isPicked) 60.dp else 44.dp)
+            .padding(bottom = 8.dp)
+            .size(75.dp)
             .clip(MaterialTheme.shapes.medium)
             .clickable { onClick() }) {
         Icon(
@@ -71,13 +72,12 @@ fun NavIcon(model: BottomNavItemModel, onClick: () -> Unit, isPicked: Boolean) {
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.weight(1f)
         )
-        if (!isPicked)
-            Text(
-                text = model.title,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary,
-                overflow = TextOverflow.Clip
-            )
+        Text(
+            text = model.title,
+            style = if (isPicked) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary,
+            overflow = TextOverflow.Clip
+        )
     }
 }
 

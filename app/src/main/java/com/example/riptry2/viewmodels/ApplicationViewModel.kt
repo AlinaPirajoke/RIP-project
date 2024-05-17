@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class ApplicationViewModel(
     applicationId: Int,
     private val db: RoomDbManager,
-    val onNavigate: (Destination) -> Unit,
+    val onAction: (Destination) -> Unit,
 ) {
     private val _state = MutableStateFlow(db.getApplicationInfo(applicationId))
     val state: StateFlow<ApplicationState> = _state.asStateFlow()
