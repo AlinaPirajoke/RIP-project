@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.example.riptry2.model.RoomDbManager
 import com.example.riptry2.screens.ApplicationScreen
 import com.example.riptry2.screens.AuthScreen
@@ -26,6 +27,8 @@ import com.example.riptry2.viewmodels.ApplicationViewModel
 import com.example.riptry2.viewmodels.HistoryListViewModel
 import com.example.riptry2.viewmodels.IncomeListViewModel
 import com.example.riptry2.viewmodels.ProductListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.olshevski.navigation.reimagined.NavBackHandler
 import dev.olshevski.navigation.reimagined.NavHost
 import dev.olshevski.navigation.reimagined.navigate
@@ -38,6 +41,7 @@ fun NavHostScreen() {
     val navController = rememberNavController<Destination>(
         startDestination = Destination.Auth
     )
+    val context = LocalContext.current
     var isAdmin by remember { mutableStateOf(false) }
     val db by remember { mutableStateOf(RoomDbManager()) }
 
@@ -59,9 +63,12 @@ fun NavHostScreen() {
                 )
             },
             bottomBar = {
-                BottomAppBar(actions = {})
+                BottomBar(
+                    onPick = navController::navigate,
+                    destination = destination,
+                    isAdmin = isAdmin
+                )
             }
-
         ) { padding ->
             Surface(
                 modifier = Modifier
