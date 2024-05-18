@@ -22,7 +22,7 @@ fun ProductScreen(vm: ProductViewModel) {
     val state by vm.state.collectAsState()
     Scaffold(
         floatingActionButton = {
-            DefaultFAB("Изменить") { vm.onAction(Destination.ModifyProduct(1)) }
+            DefaultFAB("Изменить") { vm.onAction(Destination.ModifyProduct(state.id)) }
         }
     ) {paddingValues ->
     Column(

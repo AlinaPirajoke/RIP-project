@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.example.riptry2.model.RoomDbManager
 import com.example.riptry2.screens.ApplicationScreen
 import com.example.riptry2.screens.AuthScreen
@@ -25,6 +26,7 @@ import com.example.riptry2.viewmodels.ActiveListViewModel
 import com.example.riptry2.viewmodels.ApplicationViewModel
 import com.example.riptry2.viewmodels.HistoryListViewModel
 import com.example.riptry2.viewmodels.IncomeListViewModel
+import com.example.riptry2.viewmodels.ModifyProductViewModel
 import com.example.riptry2.viewmodels.ProductListViewModel
 import com.example.riptry2.viewmodels.ProductViewModel
 import dev.olshevski.navigation.reimagined.NavBackHandler
@@ -39,9 +41,10 @@ fun NavHostScreen() {
     val navController = rememberNavController<Destination>(
         startDestination = Destination.Auth
     )
+    val context = LocalContext.current
     var isAdmin by remember { mutableStateOf(false) }
     var isLogged by remember { mutableStateOf(false) }
-    val db by remember { mutableStateOf(RoomDbManager()) }
+    val db by remember { mutableStateOf(RoomDbManager(context)) }
 
     NavBackHandler(navController)
     NavHost(navController) { destination ->
@@ -91,21 +94,21 @@ fun NavHostScreen() {
                     is Destination.IncomeApplicationList -> DefaultListScreen(
                         IncomeListViewModel(
                             db = db,
-                            onPickOption = { navController.navigate(Destination.ApplicationInfo(it)) }
+                            onAction = navController::navigate
                         )
                     )
 
                     is Destination.ActiveApplicationList -> DefaultListScreen(
                         ActiveListViewModel(
                             db = db,
-                            onPickOption = { navController.navigate(Destination.ApplicationInfo(it)) }
+                            onAction = navController::navigate
                         )
                     )
 
                     is Destination.HistoryApplicationList -> DefaultListScreen(
                         HistoryListViewModel(
                             db = db,
-                            onPickOption = { navController.navigate(Destination.ApplicationInfo(it)) }
+                            onAction = navController::navigate
                         )
                     )
 
@@ -121,7 +124,7 @@ fun NavHostScreen() {
                     is Destination.ProductList -> DefaultListScreen(
                         ProductListViewModel(
                             db = db,
-                            onPickOption = { navController.navigate(Destination.ProductInfo(it)) }
+                            onAction = navController::navigate
                         )
                     )
 
@@ -135,7 +138,13 @@ fun NavHostScreen() {
                         )
                     }
 
-                    is Destination.ModifyProduct -> ModifyProductScreen()
+                    is Destination.ModifyProduct -> ModifyProductScreen(
+                        vm = ModifyProductViewModel(
+                            productId = destination.productId,
+                            db = db,
+                            onAction = navController::navigate
+                        )
+                    )
                 }
             }
         }
