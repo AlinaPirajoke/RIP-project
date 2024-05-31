@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class DefaultListViewModel(private val onAction: (Destination) -> Unit): ViewModel()  {
+abstract class DefaultListViewModel(private val onAction: (Destination) -> Unit) : ViewModel() {
 
     protected val _state = MutableStateFlow(ListState())
     val state: StateFlow<ListState> = _state.asStateFlow()
@@ -22,35 +22,57 @@ abstract class DefaultListViewModel(private val onAction: (Destination) -> Unit)
     open fun onPickOption(id: Int) = onAction(Destination.ApplicationInfo(id))
 }
 
-class IncomeListViewModel(val db: RoomDbManager, onAction: (Destination) -> Unit) : DefaultListViewModel(onAction) {
-    init { getList() }
+class IncomeListViewModel(val db: RoomDbManager, onAction: (Destination) -> Unit) :
+    DefaultListViewModel(onAction) {
+    init {
+        getList()
+    }
+
     override fun getList() {
-        _state.update { state ->
-            state.copy(list = db.getIncomeList())
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update { state ->
+                state.copy(list = db.getIncomeAnnouncementsList())
+            }
         }
     }
 }
 
-class ActiveListViewModel(val db: RoomDbManager, onAction: (Destination) -> Unit) : DefaultListViewModel(onAction) {
-    init { getList() }
+class ActiveListViewModel(val db: RoomDbManager, onAction: (Destination) -> Unit) :
+    DefaultListViewModel(onAction) {
+    init {
+        getList()
+    }
+
     override fun getList() {
-        _state.update { state ->
-            state.copy(list = db.getActiveList())
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update { state ->
+                state.copy(list = db.getActiveAnnouncementsList())
+            }
         }
     }
 }
 
-class HistoryListViewModel(val db: RoomDbManager, onAction: (Destination) -> Unit) : DefaultListViewModel(onAction) {
-    init { getList() }
+class HistoryListViewModel(val db: RoomDbManager, onAction: (Destination) -> Unit) :
+    DefaultListViewModel(onAction) {
+    init {
+        getList()
+    }
+
     override fun getList() {
-        _state.update { state ->
-            state.copy(list = db.getHistoryList())
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update { state ->
+                state.copy(list = db.getDoneAnnouncementsList())
+            }
         }
     }
 }
 
-class ProductListViewModel(val db: RoomDbManager, val onAction: (Destination) -> Unit) : DefaultListViewModel(onAction) {
-    init { getList() }
+class ProductListViewModel(val db: RoomDbManager, val onAction: (Destination) -> Unit) :
+    DefaultListViewModel(onAction) {
+    init {
+        getList()
+    }
+
     override fun getList() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update { state ->

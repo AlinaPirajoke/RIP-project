@@ -48,6 +48,7 @@ fun getBottomNavItemModels(isAdmin: Boolean): List<BottomNavItemModel> {
     )
     if (isAdmin)
         list.add(
+            1,
             BottomNavItemModel(
                 title = "Входящие",
                 icon = ImageVector.vectorResource(R.drawable.income),

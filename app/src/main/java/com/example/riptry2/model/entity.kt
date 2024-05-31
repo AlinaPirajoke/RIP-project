@@ -3,10 +3,13 @@ package com.example.riptry2.model
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.example.riptry2.viewmodels.states.ApplicationState
 import com.example.riptry2.viewmodels.states.ProductState
 import com.example.riptry2.viewmodels.states.utils.ApplicationStatus
 import com.example.riptry2.viewmodels.states.utils.ListOptionModel
+import com.example.riptry2.viewmodels.states.utils.RequiredProduct
 
+// Заявки
 @Entity(tableName = "announcement")
 data class AnnouncementEntity(
     @PrimaryKey(autoGenerate = true)
@@ -16,6 +19,7 @@ data class AnnouncementEntity(
     val status: Int = ApplicationStatus.INCOME.status
 )
 
+// Продукты
 @Entity(tableName = "product")
 data class ProductEntity(
     @PrimaryKey(autoGenerate = true)
@@ -25,6 +29,7 @@ data class ProductEntity(
     val left: Int = 0
 )
 
+// Заявки-продукты
 @Entity(
     tableName = "announcement_product", foreignKeys = [
         ForeignKey(
@@ -47,6 +52,7 @@ data class AnnouncementProductEntity(
     val quantity: Int = 0
 )
 
+// Мапперы
 fun ProductEntity.mapToProductState(): ProductState =
     ProductState(
         id = this.id,
@@ -60,3 +66,12 @@ fun ProductEntity.mapToListModel(): ListOptionModel =
 
 fun AnnouncementEntity.mapToListModel(): ListOptionModel =
     ListOptionModel(id = this.id, text = this.title)
+
+fun AnnouncementEntity.mapToApplicationState(required: ArrayList<RequiredProduct> = arrayListOf()): ApplicationState =
+    ApplicationState(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        status = ApplicationStatus.entries.first { it.status == this.status },
+        required = required
+    )
